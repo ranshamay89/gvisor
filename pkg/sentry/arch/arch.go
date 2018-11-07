@@ -33,6 +33,7 @@ type Arch int
 const (
 	// AMD64 is the x86-64 architecture.
 	AMD64 Arch = iota
+	ARM64
 )
 
 // String implements fmt.Stringer.

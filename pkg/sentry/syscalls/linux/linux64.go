@@ -30,6 +30,299 @@ import (
 // AUDIT_ARCH_X86_64 identifies the Linux syscall API on AMD64, and is taken
 // from <linux/audit.h>.
 const _AUDIT_ARCH_X86_64 = 0xc000003e
+const _AUDIT_ARCH_AARCH64 = 0xc00000b7
+
+var ARM64 = &kernel.SyscallTable{
+        OS:   abi.Linux,
+        Arch: arch.ARM64,
+        Version: kernel.Version{
+                Sysname: "Linux",
+                Release: "3.11.10",
+                Version: "#1 SMP Fri Nov 29 10:47:50 PST 2013",
+        },
+        AuditNumber: _AUDIT_ARCH_AARCH64,
+        Table: map[uintptr]kernel.SyscallFn{
+                0:   IoSetup,
+                1:   IoDestroy,
+                2:   IoSubmit,
+                3:   IoCancel,
+                4:   IoGetevents,
+                5:   syscalls.ErrorWithEvent(syscall.ENOTSUP), // Setxattr, requires filesystem support
+                6:   syscalls.ErrorWithEvent(syscall.ENOTSUP), // Lsetxattr, requires filesystem support
+                7:   syscalls.ErrorWithEvent(syscall.ENOTSUP),
+                8:   syscalls.ErrorWithEvent(syscall.ENOTSUP),
+                9:   syscalls.ErrorWithEvent(syscall.ENOTSUP),
+                10:  syscalls.ErrorWithEvent(syscall.ENOTSUP),
+                11:  syscalls.ErrorWithEvent(syscall.ENOTSUP),
+                12:  syscalls.ErrorWithEvent(syscall.ENOTSUP),
+                13:  syscalls.ErrorWithEvent(syscall.ENOTSUP),
+                14:  syscalls.ErrorWithEvent(syscall.ENOTSUP),
+                15:  syscalls.ErrorWithEvent(syscall.ENOTSUP),
+                16:  syscalls.ErrorWithEvent(syscall.ENOTSUP),
+                17:   Getcwd,
+                18:  syscalls.CapError(linux.CAP_SYS_ADMIN), // LookupDcookie, requires cap_sys_admin
+                19:   Eventfd2,
+                20:   EpollCreate1,
+                21:   EpollCtl,
+                22:   EpollPwait,
+                23:   Dup,
+                24:   Dup3,
+                25:   Fcntl,
+                26:   InotifyInit1,
+                27:   InotifyAddWatch,
+                28:   InotifyRmWatch,
+                29:   Ioctl,
+                30:   syscalls.CapError(linux.CAP_SYS_ADMIN), // IoprioSet, requires cap_sys_nice or cap_sys_admin (depending)
+                31:   syscalls.CapError(linux.CAP_SYS_ADMIN), // IoprioGet, requires cap_sys_nice or cap_sys_admin (depending)
+                32:   Flock,
+                33:   Mknodat,
+                34:   Mkdirat,
+                35:   Unlinkat,
+                36:   Symlinkat,
+                37:   Linkat,
+                38:   Renameat,
+                39:   Umount2,
+                40:   Mount,
+                41:   syscalls.Error(syscall.EPERM),               // PivotRoot
+                42:   syscalls.Error(syscall.ENOSYS),          // Nfsservctl, does not exist > 3.1
+                43:   Statfs,
+                44:   Fstatfs,
+                45:   Truncate,
+                46:   Ftruncate,
+                47:   Fallocate,
+                48:   Faccessat,
+                49:   Chdir,
+                50:   Fchdir,
+                51:   Chroot,
+                52:   Fchmod,
+                53:   Fchmodat,
+                54:   Fchownat,
+                55:   Fchown,
+                56:   Openat,
+                57:   Close,
+                58:   syscalls.CapError(linux.CAP_SYS_TTY_CONFIG), // Vhangup,
+                59:   Pipe2,
+                60:   syscalls.CapError(linux.CAP_SYS_ADMIN),  // Quotactl, requires cap_sys_admin (most operations)
+                61:   Getdents64,
+                62:   Lseek,
+                63:   Read,
+                64:   Write,
+                65:   Readv,
+                66:   Writev,
+                67:   Pread64,
+                68:   Pwrite64,
+                69:   Preadv,
+                70:   Pwritev,
+                71:   Sendfile,
+                72:   Pselect,
+                73:   Ppoll,
+                //74:   Signalfd4,	//TODO
+                //75:   Vmsplice,	//TODO
+                //76:   Splice,		//TODO
+                //77:   Tee,		//TODO
+                78:   Readlinkat,
+                79:   Fstatat,
+                80:   Fstat,
+                81:   Sync,
+                82:   Fsync,
+                83:   Fdatasync,
+                //84:   SyncFileRange,	//TODO
+                85:   TimerfdCreate,
+                86:   TimerfdSettime,
+                87:   TimerfdGettime,
+                88:   Utimensat,
+                89:   syscalls.CapError(linux.CAP_SYS_PACCT), // Acct, requires cap_sys_pacct
+                90:   Capget,
+                91:   Capset,
+                92:   syscalls.ErrorWithEvent(syscall.EINVAL), // Personality, unable to change personality
+                93:   Exit,
+                94:   ExitGroup,
+                95:   Waitid,
+                96:   SetTidAddress,
+                97:   Unshare,
+                98:   Futex,
+                99:   syscalls.Error(syscall.ENOSYS), // SetRobustList, obsolete
+                100:   syscalls.Error(syscall.ENOSYS), // GetRobustList, obsolete
+                101:   Nanosleep,
+                102:   Getitimer,
+                103:   Setitimer,
+                104:   syscalls.CapError(linux.CAP_SYS_BOOT), // kexec_load, requires cap_sys_boot
+                105:   syscalls.CapError(linux.CAP_SYS_MODULE), // InitModule, requires cap_sys_module
+                106:   syscalls.CapError(linux.CAP_SYS_MODULE), // DeleteModule, requires cap_sys_module
+                107:   TimerCreate,
+                108:   TimerGettime,
+                109:   TimerGetoverrun,
+                110:   TimerSettime,
+                111:   TimerDelete,
+                112:   ClockSettime,
+                113:   ClockGettime,
+                114:   ClockGetres,
+                115:   ClockNanosleep,
+                116:   Syslog,
+                117:   Ptrace,
+                118:   syscalls.CapError(linux.CAP_SYS_NICE), // SchedSetparam, requires cap_sys_nice
+                119:   SchedSetscheduler,
+                120:   SchedGetscheduler,
+                121:   SchedGetparam,
+                122:   SchedSetaffinity,
+                123:   SchedGetaffinity,
+                124:   SchedYield,
+                125:   SchedGetPriorityMax,
+                126:   SchedGetPriorityMin,
+                127:   syscalls.ErrorWithEvent(syscall.EPERM),      // SchedRrGetInterval,
+                128:   RestartSyscall,
+                129:   Kill,
+                130:   Tkill,
+                131:   Tgkill,
+                132:   Sigaltstack,
+                133:   RtSigsuspend,
+                134:   RtSigaction,
+                135:   RtSigprocmask,
+                136:   RtSigpending,
+                137:   RtSigtimedwait,
+                138:   RtSigqueueinfo,
+                139:   RtSigreturn,
+                140:   Setpriority,
+                141:   Getpriority,
+                142:   syscalls.CapError(linux.CAP_SYS_BOOT),  // Reboot, requires cap_sys_boot
+                143:   Setregid,
+                144:   Setgid,
+                145:   Setreuid,
+                146:   Setuid,
+                147:   Setresuid,
+                148:   Getresuid,
+                149:   Setresgid,
+                150:   Getresgid,
+                //151:   Setfsuid,	//TODO
+                //152:   Setfsgid,	//TODO
+                153:   Times,
+                154:   Setpgid,
+                155:   Getpgid,
+                156:   Getsid,
+                157:   Setsid,
+                158:   Getgroups,
+                159:   Setgroups,
+                160:   Uname,
+                161:   Sethostname,
+                162:   Setdomainname,
+                163:   Getrlimit,
+                164:   Setrlimit,
+                165:   Getrusage,
+                166:   Umask,
+                167:   Prctl,
+                168:   Getcpu,
+                169:   Gettimeofday,
+                170:   syscalls.CapError(linux.CAP_SYS_TIME),  // Settimeofday, requires cap_sys_time
+                171:   syscalls.CapError(linux.CAP_SYS_TIME), // Adjtimex, requires cap_sys_time
+                172:   Getpid,
+                173:   Getppid,
+                174:   Getuid,
+                175:   Geteuid,
+                176:   Getgid,
+                177:   Getegid,
+                178:   Gettid,
+                179:   Sysinfo,
+                //180:   MqOpen,	//TODO
+                //181:   MqUnlink,	//TODO
+                //182:   MqTimedsend,
+                //183:   MqTimedreceive,
+                //184:   MqNotify,
+                //185:   MqGetsetattr,
+                //186:   Msgget,
+                //187:   Msgctl,
+                //188:   Msgrcv,
+                //189:   Msgsnd,
+                190:   Semget,
+                191:   Semctl,
+                //192:   Semtimedop,
+                193:   Semop,
+                194:   Shmget,
+                195:   Shmctl,
+                196:   Shmat,
+                197:   Shmdt,
+                198:   Socket,
+                199:   SocketPair,
+                200:   Bind,
+                201:   Listen,
+                202:   Accept,
+                203:   Connect,
+                204:   GetSockName,
+                205:   GetPeerName,
+                206:   SendTo,
+                207:   RecvFrom,
+                208:   SetSockOpt,
+                209:   GetSockOpt,
+                210:   Shutdown,
+                211:   SendMsg,
+                212:   RecvMsg,
+                213:   nil,                                      // Readahead, TODO
+                214:   Brk,
+                215:   Munmap,
+                216:   Mremap,
+                217:   syscalls.Error(syscall.EACCES),         // AddKey, not available to user
+                218:   syscalls.Error(syscall.EACCES),         // RequestKey, not available to user
+                219:   syscalls.Error(syscall.EACCES),         // Keyctl, not available to user
+                220:   Clone,
+                221:   Execve,
+                222:   Mmap,
+                223:   Fadvise64,
+                224:   syscalls.CapError(linux.CAP_SYS_ADMIN), // Swapon, requires cap_sys_admin
+                225:   syscalls.CapError(linux.CAP_SYS_ADMIN), // Swapoff, requires cap_sys_admin
+                226:   Mprotect,
+                227:   Msync,
+                228:   syscalls.Error(nil),                         // Mlock, TODO
+                229:   syscalls.Error(nil),                         // Munlock, TODO
+                230:   syscalls.Error(nil),                         // Mlockall, TODO
+                231:   syscalls.Error(nil),                         // Munlockall, TODO
+                232:   Mincore,
+                233:   Madvise,
+                234:   syscalls.ErrorWithEvent(syscall.ENOSYS), // RemapFilePages, deprecated since 3.16
+                235:   syscalls.CapError(linux.CAP_SYS_NICE), // Mbind, may require cap_sys_nice TODO
+                236:   GetMempolicy,
+                237:   SetMempolicy,
+                238:   syscalls.CapError(linux.CAP_SYS_NICE), // MigratePages, requires cap_sys_nice
+                239:   syscalls.CapError(linux.CAP_SYS_NICE), // MovePages, requires cap_sys_nice (mostly)
+                240:   RtTgsigqueueinfo,
+                241:   syscalls.ErrorWithEvent(syscall.ENODEV), // PerfEventOpen, no support for perf counters
+                242:   Accept4,
+                243:   RecvMMsg,
+                //244:   ArchSpecificSyscall,
+                260:   Wait4,
+                261:   Prlimit64,
+                262:   syscalls.ErrorWithEvent(syscall.ENOSYS), // FanotifyInit, needs CONFIG_FANOTIFY
+                263:   syscalls.ErrorWithEvent(syscall.ENOSYS), // FanotifyMark, needs CONFIG_FANOTIFY
+                264:   syscalls.ErrorWithEvent(syscall.EOPNOTSUPP), // NameToHandleAt, needs filesystem support
+                265:   syscalls.ErrorWithEvent(syscall.EOPNOTSUPP), // OpenByHandleAt, needs filesystem support
+                266:   syscalls.CapError(linux.CAP_SYS_TIME),       // ClockAdjtime, requires cap_sys_time
+                267:   Syncfs,
+                //268:   Setns,
+                269:   SendMMsg,
+                //270:   ProcessVmReadv,
+                //271:   ProcessVmWritev,
+                272:   syscalls.CapError(linux.CAP_SYS_PTRACE), // Kcmp, requires cap_sys_ptrace
+                273:   syscalls.CapError(linux.CAP_SYS_MODULE), // FinitModule, requires cap_sys_module
+                //274:   SchedSetattr,	//TODO
+                //275:   SchedGetattr,
+                //276:   Renameat2,
+                //277:   Seccomp,
+                278:   GetRandom,
+                //279:   MemfdCreate,
+                //280:   Bpf,
+                //281:   Execveat,
+                //282:   Userfaultfd,
+                //283:   Membarrier,
+                //284:   Mlock2,
+	},
+        Emulate: map[usermem.Addr]uintptr{
+                0xffffffffff600000: 169,  // vsyscall gettimeofday(2)
+                0xffffffffff600400: 153, // vsyscall time(2)
+                0xffffffffff600800: 168, // vsyscall getcpu(2)
+        },
+        Missing: func(t *kernel.Task, sysno uintptr, args arch.SyscallArguments) (uintptr, error) {
+                t.Kernel().EmitUnimplementedEvent(t)
+                return 0, syserror.ENOSYS
+        },
+}
 
 // AMD64 is a table of Linux amd64 syscall API with the corresponding syscall
 // numbers from Linux 3.11. The entries commented out are those syscalls we
